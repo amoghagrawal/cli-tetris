@@ -1,6 +1,5 @@
 import random
 import time
-from batgrl.io.keys import Keys
 
 from constants import (
     INITIAL_SPEED, SPEED_INCREASE, LEVEL_SPEED_INCREASE, MIN_SPEED,
@@ -240,8 +239,6 @@ class TetrisGame:
     
     def draw(self):
         """Draw the game"""
-        self.ui.update_score(self.score)
-        self.ui.update_level(self.level)
         self.ui.draw(
             self.board,
             self.current_tetromino,
@@ -249,5 +246,7 @@ class TetrisGame:
             self.ghost_tetromino,
             self.game_over,
             self.paused,
+            self.score,
+            self.level,
             self.lines_cleared
         ) 
