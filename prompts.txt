@@ -1,0 +1,103 @@
+# Tetris Implementation Prompts
+
+## Prompt 1: Project Setup
+Create the initial project structure for our Tetris game with batgrl. Set up the following files and directories:
+- tetris/
+  - __init__.py (empty file)
+  - main.py (entry point)
+  - constants.py (game constants)
+  - game.py (main game logic)
+  - tetromino.py (piece definitions and behavior)
+  - board.py (game board state)
+  - ui.py (user interface components)
+  - utils.py (helper functions)
+  - README.md
+  - requirements.txt
+
+Add batgrl to requirements.txt and create basic starter code for main.py that imports necessary modules.
+
+## Prompt 2: Implement Constants
+In constants.py, define all game constants including:
+- Board dimensions (width, height)
+- Colors for each tetromino type
+- Shapes for all 7 tetromino types (I, O, T, S, Z, J, L)
+- Scoring rules (points per line cleared, multipliers)
+- Game speeds for different levels
+Keep the implementation clean and well-commented, under 300 lines.
+
+## Prompt 3: Implement Tetromino Class
+Create tetromino.py with a Tetromino class that:
+- Initializes with a shape, position, and color
+- Has methods for rotation (clockwise and counter-clockwise)
+- Has methods for movement (left, right, down)
+- Includes logic to get the current shape cells based on rotation
+- Can generate a random tetromino
+Keep implementation under 300 lines with clean, modular code.
+
+## Prompt 4: Create Game Board
+In board.py, implement a Board class that:
+- Maintains the game state grid
+- Checks for collisions between tetrominos and the board
+- Adds tetrominos to the board when they land
+- Clears completed rows and updates the score
+- Provides methods to check if the game is over
+Keep implementation under 300 lines with clean, modular code.
+
+## Prompt 5: Basic UI Components
+In ui.py, create the UI components needed for the game:
+- A main game view class that can render the board
+- A next piece preview box
+- Score and level displays
+- A game over screen
+Use batgrl's rendering capabilities effectively. Keep implementation under 300 lines.
+
+## Prompt 6: Game Logic Implementation
+In game.py, implement the main game logic:
+- Game class that ties together board, tetrominos, and UI
+- Game loop with timing for piece falling
+- Input handling for player controls
+- Level progression as score increases
+- Pause functionality
+Keep implementation under 300 lines with clean, modular code.
+
+## Prompt 7: Entry Point Implementation
+Complete main.py to:
+- Parse command-line arguments (if any)
+- Set up the game environment
+- Initialize and run the game
+- Handle graceful shutdown
+Keep implementation under 100 lines.
+
+## Prompt 8: Utils and Helper Functions
+In utils.py, implement any helper functions needed:
+- Screen/terminal size detection
+- Key mapping functions
+- Any other utility functions needed
+Keep implementation under 200 lines.
+
+## Prompt 9: Documentation and README
+Create a comprehensive README.md that includes:
+- Game description
+- Installation instructions for both Windows and Unix
+- Requirements and dependencies
+- How to play instructions with controls
+- Credit to batgrl library
+- License information
+Format it professionally with Markdown.
+
+## Prompt 10: Polish and Cross-Platform Testing
+Implement any final touches:
+- Make sure the game runs on both Windows and Unix
+- Add proper error handling
+- Implement clean exit procedures
+- Test and fix any platform-specific issues
+- Add comments explaining any platform-specific code
+
+## Prompt 11: Add Extra Features (Optional)
+Consider adding these features if the core game is working well:
+- High score tracking in a local file
+- Multiple difficulty levels
+- Custom controls/key bindings
+- Game pausing
+- Sound effects (if supported)
+Keep any feature implementation modular and under 300 lines per file. 
