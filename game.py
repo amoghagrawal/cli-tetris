@@ -1,14 +1,16 @@
 import random
 import time
+import asyncio
 
 from constants import (
     INITIAL_SPEED, SPEED_INCREASE, LEVEL_SPEED_INCREASE, MIN_SPEED,
     POINTS_SINGLE, POINTS_DOUBLE, POINTS_TRIPLE, POINTS_TETRIS, LINES_PER_LEVEL,
-    KEY_QUIT, KEY_PAUSE, KEY_RESTART, KEY_LEFT, KEY_RIGHT, KEY_DOWN, KEY_DROP, KEY_ROTATE,
-    START_X, START_Y, SHAPES, WALL_KICK_ATTEMPTS
+    KEY_QUIT, KEY_LEFT, KEY_RIGHT, KEY_DOWN, KEY_ROTATE, KEY_DROP, KEY_PAUSE, KEY_RESTART, KEY_HOLD,
+    START_X, START_Y, SHAPES, WALL_KICK_ATTEMPTS, SCORING
 )
 from board import Board
 from tetromino import Tetromino
+from utils import create_fps_limiter
 
 
 class TetrisGame:
@@ -17,24 +19,33 @@ class TetrisGame:
         Initialize a new Tetris game
         
         Args:
-            ui (GameUI): The game UI
+            ui (TetrisUI): The game UI
         """
         self.ui = ui
         self.board = Board()
         self.current_tetromino = None
         self.next_tetromino = None
+        self.hold_tetromino = None
+        self.can_hold = True  # Can only hold once per tetromino
         self.score = 0
         self.level = 1
         self.lines_cleared = 0
         self.game_over = False
         self.paused = False
         self.speed = INITIAL_SPEED
+        self.speed_increase = SPEED_INCREASE
+        self.level_speed_increase = LEVEL_SPEED_INCREASE
+        self.lines_per_level = LINES_PER_LEVEL
         self.last_drop_time = time.time()
         self.ghost_tetromino = None
         
         # Generate initial tetrominos
         self._generate_tetromino()
         self._generate_next_tetromino()
+        
+        # Update UI with initial state
+        if self.ui:
+            self.ui.update_display()
     
     def _generate_tetromino(self):
         """Generate a new tetromino at the top of the board"""
@@ -115,6 +126,40 @@ class TetrisGame:
             self.current_tetromino.y = self.ghost_tetromino.y
             self._lock_tetromino()
     
+    def hold_piece(self):
+        """Hold the current piece, or swap with already held piece"""
+        if self.game_over or self.paused or not self.can_hold:
+            return
+        
+        if self.hold_tetromino is None:
+            # First hold - store current and get new
+            self.hold_tetromino = Tetromino(
+                shape_type=self.current_tetromino.shape_type,
+                x=0, y=0, rotation=0
+            )
+            self._generate_tetromino()
+        else:
+            # Swap hold with current
+            current_type = self.current_tetromino.shape_type
+            
+            # Reset current tetromino to held type
+            self.current_tetromino = Tetromino(
+                shape_type=self.hold_tetromino.shape_type,
+                x=START_X, y=START_Y, rotation=0
+            )
+            
+            # Update hold
+            self.hold_tetromino = Tetromino(
+                shape_type=current_type,
+                x=0, y=0, rotation=0
+            )
+        
+        # Can't hold again until piece is placed
+        self.can_hold = False
+        
+        # Update ghost piece
+        self._update_ghost_position()
+    
     def rotate(self):
         """Rotate the current tetromino"""
         if self.game_over or self.paused:
@@ -160,6 +205,9 @@ class TetrisGame:
         # Generate new tetromino
         self._generate_tetromino()
         self._generate_next_tetromino()
+        
+        # Allow holding again with new piece
+        self.can_hold = True
     
     def _update_score(self, lines_cleared):
         """
@@ -171,24 +219,15 @@ class TetrisGame:
         self.lines_cleared += lines_cleared
         
         # Calculate score for this clear
-        if lines_cleared == 1:
-            points = POINTS_SINGLE
-        elif lines_cleared == 2:
-            points = POINTS_DOUBLE
-        elif lines_cleared == 3:
-            points = POINTS_TRIPLE
-        elif lines_cleared == 4:
-            points = POINTS_TETRIS
-        else:
-            points = 0
-        
-        # Apply level multiplier
-        self.score += points * self.level
+        if lines_cleared > 0:
+            points = SCORING.get(lines_cleared, 0)
+            # Apply level multiplier
+            self.score += points * self.level
         
         # Check for level up
-        if self.lines_cleared >= self.level * LINES_PER_LEVEL:
+        if self.lines_cleared >= self.level * self.lines_per_level:
             self.level += 1
-            self.speed -= LEVEL_SPEED_INCREASE
+            self.speed -= self.level_speed_increase
             self.speed = max(MIN_SPEED, self.speed)  # Ensure minimum speed
     
     def handle_input(self, key):
@@ -197,6 +236,9 @@ class TetrisGame:
         
         Args:
             key: The key that was pressed
+            
+        Returns:
+            bool: True to continue game, False to quit
         """
         if key == KEY_QUIT:
             return False  # Signal to quit
@@ -215,10 +257,16 @@ class TetrisGame:
                 self.hard_drop()
             elif key == KEY_ROTATE:
                 self.rotate()
+            elif key == KEY_HOLD:
+                self.hold_piece()
         
         # Allow restart if game over
         elif self.game_over and key == KEY_RESTART:
             self.__init__(self.ui)
+        
+        # Update the UI after input
+        if self.ui:
+            self.ui.update_display()
         
         return True  # Continue game
     
@@ -235,7 +283,7 @@ class TetrisGame:
             self.move_down()
             
             # Gradually increase speed
-            self.speed = max(MIN_SPEED, self.speed - SPEED_INCREASE)
+            self.speed = max(MIN_SPEED, self.speed - self.speed_increase)
     
     def draw(self):
         """Draw the game"""
@@ -250,3 +298,33 @@ class TetrisGame:
             self.level,
             self.lines_cleared
         ) 
+
+    async def game_loop(self):
+        """Main game loop - called by the UI"""
+        last_update = time.time()
+        fps_limit = create_fps_limiter(30)  # Limit to 30 FPS
+        
+        while not self.game_over:
+            # Sleep to limit CPU usage
+            await asyncio.sleep(0.01)  # Short sleep for responsiveness
+            
+            # Maintain consistent frame rate
+            fps_limit()
+            
+            if self.paused:
+                continue
+                
+            current_time = time.time()
+            elapsed = current_time - last_update
+            
+            # Time to drop?
+            if elapsed >= self.speed:
+                last_update = current_time
+                self.move_down()
+                
+                # Update UI
+                if self.ui:
+                    self.ui.update_display()
+                
+                # Gradually increase speed
+                self.speed = max(MIN_SPEED, self.speed - self.speed_increase) 

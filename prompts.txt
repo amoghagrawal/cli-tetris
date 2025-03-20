@@ -85,19 +85,16 @@ Create a comprehensive README.md that includes:
 - License information
 Format it professionally with Markdown.
 
-## Prompt 10: Polish and Cross-Platform Testing
+## Prompt 10: Polish and Testing
 Implement any final touches:
-- Make sure the game runs on both Windows and Unix
 - Add proper error handling
 - Implement clean exit procedures
 - Test and fix any platform-specific issues
-- Add comments explaining any platform-specific code
 
-## Prompt 11: Add Extra Features (Optional)
+## Prompt 11: Add Extra Features
 Consider adding these features if the core game is working well:
 - High score tracking in a local file
 - Multiple difficulty levels
 - Custom controls/key bindings
 - Game pausing
-- Sound effects (if supported)
 Keep any feature implementation modular and under 300 lines per file. 

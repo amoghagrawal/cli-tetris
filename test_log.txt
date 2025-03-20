@@ -1,0 +1,30 @@
+2025-03-20 17:53:47,698 - test - INFO - Starting test program
+2025-03-20 17:53:47,698 - test - DEBUG - This is a debug message
+2025-03-20 17:53:47,699 - test - INFO - This is an info message
+2025-03-20 17:53:47,699 - test - WARNING - This is a warning message
+2025-03-20 17:53:47,700 - test - INFO - About to try a function that will raise an error
+2025-03-20 17:53:47,700 - test - CRITICAL - Caught an error: division by zero
+2025-03-20 17:53:47,712 - test - CRITICAL - Traceback (most recent call last):
+  File "C:\Users\amogh\Downloads\cli-tetris\test_error_handling.py", line 58, in main
+    test_function_with_error()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\amogh\Downloads\cli-tetris\test_error_handling.py", line 42, in test_function_with_error
+    x = 1 / 0  # Will raise ZeroDivisionError
+        ~~^~~
+ZeroDivisionError: division by zero
+
+2025-03-20 17:57:24,732 - test - INFO - Starting test program
+2025-03-20 17:57:24,733 - test - DEBUG - This is a debug message
+2025-03-20 17:57:24,733 - test - INFO - This is an info message
+2025-03-20 17:57:24,734 - test - WARNING - This is a warning message
+2025-03-20 17:57:24,734 - test - INFO - About to try a function that will raise an error
+2025-03-20 17:57:24,734 - test - CRITICAL - Caught an error: division by zero
+2025-03-20 17:57:24,746 - test - CRITICAL - Traceback (most recent call last):
+  File "C:\Users\amogh\Downloads\cli-tetris\test_error_handling.py", line 58, in main
+    test_function_with_error()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\amogh\Downloads\cli-tetris\test_error_handling.py", line 42, in test_function_with_error
+    x = 1 / 0  # Will raise ZeroDivisionError
+        ~~^~~
+ZeroDivisionError: division by zero
+

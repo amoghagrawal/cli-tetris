@@ -1,11 +1,11 @@
-# Game Board Constants
+# Game dimensions
 BOARD_WIDTH = 10
 BOARD_HEIGHT = 20
 BLOCK_SIZE = 1
 
 # Game Speed
 INITIAL_SPEED = 1.0  # seconds per tick
-SPEED_INCREASE = 0.05  # gradual speed increase per drop
+SPEED_INCREASE = 0.0005  # gradual speed increase per drop
 LEVEL_SPEED_INCREASE = 0.1  # speed increase per level
 MIN_SPEED = 0.05  # minimum speed cap
 
@@ -16,7 +16,7 @@ POINTS_TRIPLE = 500  # points for clearing 3 lines
 POINTS_TETRIS = 800  # points for clearing 4 lines
 LINES_PER_LEVEL = 10  # lines needed to advance to next level
 
-# Colors
+# Colors (unused, see UI.py for updated colors)
 COLORS = {
     'I': '#00FFFF',  # Cyan
     'J': '#0000FF',  # Blue
@@ -94,8 +94,31 @@ KEY_RIGHT = 'right'
 KEY_DOWN = 'down'
 KEY_DROP = 'space'
 KEY_ROTATE = 'up'
+KEY_HOLD = 'h'
 
 # UI Constants
-PREVIEW_WIDTH = 6
-PREVIEW_HEIGHT = 6
-INFO_PADDING = 3  # padding between board and info displays 
+PREVIEW_WIDTH = 4
+PREVIEW_HEIGHT = 4
+INFO_PADDING = 3  # padding between board and info displays
+
+# Game constants
+SCORING = {
+    1: 100,   # Single line
+    2: 300,   # Double
+    3: 500,   # Triple
+    4: 800    # Tetris
+}
+
+# Level speed factors
+LEVEL_SPEEDS = {
+    1: 1.0,
+    2: 0.8,
+    3: 0.6,
+    4: 0.5,
+    5: 0.4,
+    6: 0.3,
+    7: 0.25,
+    8: 0.2,
+    9: 0.15,
+    10: 0.1
+} 
